@@ -4,8 +4,10 @@ charset-normalizer==3.1.0
 coreapi==2.3.3
 coreschema==0.0.4
 Django==4.2.1
+django-ckeditor==6.5.1
 django-cors-headers==4.0.0
 django-jazzmin==2.6.0
+django-js-asset==2.0.0
 django-modeltranslation==0.18.9
 djangorestframework==3.14.0
 drf-yasg==1.21.5
