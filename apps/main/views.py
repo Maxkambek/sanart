@@ -1,6 +1,17 @@
-from .models import Catalog, Property
-from .serializers import CatalogSerializer, PropertySerializer, PropertyDetailsSerializer
+from .models import Catalog, Property, CatalogVideo
+from .serializers import CatalogSerializer, PropertySerializer, PropertyDetailsSerializer, CatalogVideoSerializer
 from rest_framework import generics
+
+
+class CatalogVideoListAPIView(generics.ListAPIView):
+    serializer_class = CatalogVideoSerializer
+
+    def get_queryset(self):
+        queryset = CatalogVideo.objects.all()
+        catalog = self.request.GET.get('catalog_id')
+        if catalog:
+            queryset = queryset.filter(catalog_id=catalog)
+        return queryset
 
 
 class CatalogListAPIView(generics.ListAPIView):

@@ -1,5 +1,11 @@
-from .models import PropertyDetails, Property, PropertyFiles, PropertyImages, Catalog
+from .models import PropertyDetails, Property, PropertyFiles, PropertyImages, Catalog, CatalogVideo
 from rest_framework import serializers
+
+
+class CatalogVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CatalogVideo
+        fields = ['id', 'video']
 
 
 class CatalogSerializer(serializers.ModelSerializer):

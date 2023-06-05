@@ -10,6 +10,11 @@ class Catalog(models.Model):
         return self.name
 
 
+class CatalogVideo(models.Model):
+    video = models.FileField(upload_to='files')
+    catalog = models.ForeignKey(Catalog, on_delete=models.CASCADE, related_name='catalog_videos')
+
+
 class Property(models.Model):
     TRADE_TYPE = (
         ('Auction', 'Action'),
