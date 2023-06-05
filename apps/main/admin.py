@@ -1,10 +1,17 @@
 from django.contrib import admin
-from .models import Catalog, Property, PropertyFiles, PropertyDetails, PropertyImages
+from .models import Catalog, Property, PropertyFiles, PropertyDetails, PropertyImages, CatalogVideo
 from modeltranslation.admin import TranslationAdmin, TranslationStackedInline
+
+
+class CatalogA(admin.StackedInline):
+    model = CatalogVideo
+    extra = 1
 
 
 @admin.register(Catalog)
 class CatalogAdmin(TranslationAdmin):
+    inlines = [CatalogA]
+
     class Media:
         js = (
             'https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
