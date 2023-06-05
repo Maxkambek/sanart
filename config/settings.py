@@ -12,6 +12,8 @@ SECRET_KEY = ENV.get('SECRET_KEY')
 
 DEBUG = True
 
+AUTH_USER_MODEL = 'accounts.User'
+
 ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True
