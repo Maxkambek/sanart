@@ -60,7 +60,8 @@ class PropertyImages(models.Model):
 
 
 class PropertyDetails(models.Model):
-    text = RichTextField()
+    key = models.CharField(max_length=223, null=True, blank=True)
+    value = models.CharField(max_length=223, null=True, blank=True)
     obj = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_details')
 
 

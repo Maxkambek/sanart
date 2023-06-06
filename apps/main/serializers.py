@@ -29,7 +29,7 @@ class PropertyImagesSerializer(serializers.ModelSerializer):
 class PropertyDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyDetails
-        fields = ['id', 'text']
+        fields = ['id', 'key', 'value']
 
 
 class PropertyDetailSerializer(serializers.ModelSerializer):

@@ -14,4 +14,4 @@ class PropertyTrans(TranslationOptions):
 
 @register(PropertyDetails)
 class DetailTrans(TranslationOptions):
-    fields = ('text',)
+    fields = ('key', 'value')
