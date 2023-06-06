@@ -1,5 +1,6 @@
 from .models import Catalog, Property, CatalogVideo
-from .serializers import CatalogSerializer, PropertySerializer, PropertyDetailsSerializer, CatalogVideoSerializer
+from .serializers import CatalogSerializer, PropertySerializer, PropertyDetailsSerializer, CatalogVideoSerializer, \
+    PropertyDetailSerializer
 from rest_framework import generics
 
 
@@ -26,4 +27,4 @@ class PropertyListAPIView(generics.ListAPIView):
 
 class PropertyRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Property.objects.all()
-    serializer_class = PropertyDetailsSerializer
+    serializer_class = PropertyDetailSerializer
