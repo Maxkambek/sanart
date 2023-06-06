@@ -6,7 +6,8 @@ class News(models.Model):
     title = models.CharField(max_length=223)
     views = models.PositiveIntegerField()
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return self.title

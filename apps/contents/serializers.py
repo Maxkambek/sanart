@@ -5,7 +5,7 @@ from rest_framework import serializers
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
-        fields = ('id', 'video', 'title', 'views', 'content', 'created_at')
+        fields = ('id', 'video', 'image', 'title', 'views', 'content', 'created_at')
 
 
 class ContactSerializer(serializers.ModelSerializer):
