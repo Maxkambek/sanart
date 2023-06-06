@@ -45,6 +45,7 @@ class Property(models.Model):
     description = models.TextField()
     phone = models.CharField(max_length=20, null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=123)
+    video = models.FileField(upload_to='files/', null=True, blank=True)
 
     def __str__(self):
         return self.name

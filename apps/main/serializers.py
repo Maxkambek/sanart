@@ -39,7 +39,7 @@ class PropertyDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Property
-        fields = ['id', 'name', 'sort_number', 'views', 'deadline',
+        fields = ['id', 'video', 'name', 'sort_number', 'views', 'deadline',
                   'start_price', 'trade_type',
                   'trade_style', 'start_date',
                   'back_price', 'get_first_step_price',
