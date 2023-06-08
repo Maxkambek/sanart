@@ -18,8 +18,8 @@ class RegisterAPI(generics.GenericAPIView):
         phone = self.request.data['phone']
         if User.objects.filter(phone=phone, is_active=True).first():
             return response.Response({'message': "This number already exist"}, status=status.HTTP_302_FOUND)
-        code = str(randint(1000, 10000))
-        ver = VerifyPhone.objects.filter(phone=phone)
+        code = str(randint(100000, 1000000))
+        ver = VerifyPhone.objects.filter(phone=phone).first()
         if ver:
             ver.delete()
         verify(phone, code)
@@ -66,17 +66,40 @@ class LoginAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         phone = request.data['phone']
-        pas = request.data['password']
         user = User.objects.filter(phone=phone).first()
         if not user:
             return response.Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        if not user.check_password(pas):
-            return response.Response({'message': 'Password incorrect'}, status=status.HTTP_401_UNAUTHORIZED)
-        token = Token.objects.get(user=user)
-        data = dict()
-        data['token'] = token.key
-        data['success'] = True
-        return response.Response(data, status=status.HTTP_200_OK)
+        ver = VerifyPhone.objects.filter(phone=phone).first()
+        if ver:
+            ver.delete()
+        code = str(randint(100000, 1000000))
+        verify(phone, code)
+        VerifyPhone.objects.create(phone=phone, code=code)
+        return response.Response({"success": True, 'message': "A confirmation code was sent to the phone number!!!"},
+                                 status=status.HTTP_200_OK)
+
+
+class LoginVerifyAPIView(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = VerifyPhoneSerializer
+
+    def post(self, request, *args, **kwargs):
+        phone = self.request.data['phone']
+        code = self.request.data['code']
+        v = VerifyPhone.objects.filter(phone=phone, code=code).first()
+        if v:
+            v.delete()
+        else:
+            return response.Response({'message': "Confirmation code incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(phone=phone).first()
+        token = Token.objects.create(user=user)
+        data = {
+            'message': 'User verified',
+            'token': str(token),
+            'user': user.role,
+            'is_separate': user.is_separate
+        }
+        return response.Response(data, status=status.HTTP_201_CREATED)
 
 
 class ChangePasswordAPI(generics.GenericAPIView):
@@ -155,18 +178,13 @@ class DistrictListAPIView(generics.ListAPIView):
         return queryset
 
 
-class UserDetailCreateAPIView(generics.CreateAPIView):
+class UserDetailYurudikCreateAPIView(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = [TokenAuthentication]
+    serializer_class = UserDetailYuridikSerializer
+    queryset = UserDetailYuridik.objects.all()
 
     def create(self, request, *args, **kwargs):
-        user = self.request.user
-        if user.role == "Yuridik":
-            self.serializer_class = UserDetailYuridikSerializer
-            self.queryset = UserDetailYuridik.objects.all()
-        if user.role == "Jismoniy":
-            self.serializer_class = UserDetailJismoniySerializer
-            self.queryset = UserDetailJismoniy.objects.all()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['user'] = self.request.user
@@ -178,19 +196,57 @@ class UserDetailCreateAPIView(generics.CreateAPIView):
         serializer.save()
 
 
-class UserDetailRUDAPI(generics.RetrieveUpdateDestroyAPIView):
+class UserDetailJismoniyCreateAPIView(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = [TokenAuthentication]
+    serializer_class = UserDetailJismoniySerializer
+    queryset = UserDetailJismoniy.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['user'] = self.request.user
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class UserDetailYuridikRUDAPI(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [TokenAuthentication]
+    serializer_class = UserDetailYuridikSerializer
+    queryset = UserDetailYuridik.objects.all()
 
     def patch(self, request, *args, **kwargs):
         user = self.request.user
-        if user.role == "Yuridik":
-            self.serializer_class = UserDetailYuridikSerializer
-            self.queryset = UserDetailYuridik.objects.all()
-        if user.role == "Jismoniy":
-            self.serializer_class = UserDetailJismoniySerializer
-            self.queryset = UserDetailJismoniy.objects.all()
-        serializer = self.get_serializer(instance=self.request.user, data=self.request.data, partial=True)
+        serializer = self.get_serializer(instance=user, data=self.request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.request.user
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.request.user
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserDetailJismoniyRUDAPI(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [TokenAuthentication]
+    serializer_class = UserDetailJismoniySerializer
+    queryset = UserDetailJismoniy.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.get_serializer(instance=user, data=self.request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return response.Response(serializer.data)

@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     role = models.CharField(max_length=123, choices=ROLE, default='Jismoniy')
+    is_separate = models.BooleanField(default=False)
 
     objects = UserManager()
     USERNAME_FIELD = 'phone'
