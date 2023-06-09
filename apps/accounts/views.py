@@ -92,7 +92,7 @@ class LoginVerifyAPIView(generics.GenericAPIView):
         else:
             return response.Response({'message': "Confirmation code incorrect!"}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.filter(phone=phone).first()
-        token = Token.objects.create(user=user)
+        token = Token.objects.get(user=user)
         data = {
             'message': 'User verified',
             'token': str(token),
