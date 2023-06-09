@@ -79,10 +79,14 @@ class UserDetailJismoniy(models.Model):
 
 
 class UserDetailYuridik(models.Model):
+    name = models.CharField(max_length=123)
     inn = models.CharField(max_length=123)
     director = models.CharField(max_length=1234)
     registered_date = models.CharField(max_length=123)
     address = models.CharField(max_length=333)
+    mfo = models.CharField(max_length=333)
+    bank = models.CharField(max_length=1234)
+    account = models.CharField(max_length=1234)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_detail_yuridik')
 
     def __str__(self):
