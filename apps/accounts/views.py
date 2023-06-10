@@ -222,18 +222,19 @@ class UserDetailYuridikRUDAPI(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         user = self.request.user
-        serializer = self.get_serializer(instance=user, data=self.request.data, partial=True)
+        instance = UserDetailYuridik.objects.filter(user=user).first()
+        serializer = self.get_serializer(instance=instance, data=self.request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return response.Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.request.user
+        instance = UserDetailYuridik.objects.filter(user=self.request.user).first()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.request.user
+        instance = UserDetailYuridik.objects.filter(user=self.request.user).first()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -246,18 +247,19 @@ class UserDetailJismoniyRUDAPI(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         user = self.request.user
-        serializer = self.get_serializer(instance=user, data=self.request.data, partial=True)
+        instance = UserDetailJismoniy.objects.filter(user=user).first()
+        serializer = self.get_serializer(instance=instance, data=self.request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return response.Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.request.user
+        instance = UserDetailJismoniy.objects.filter(user=self.request.user).first()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.request.user
+        instance = UserDetailJismoniy.objects.filter(user=self.request.user).first()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
