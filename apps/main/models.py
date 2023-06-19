@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from ckeditor.fields import RichTextField
 
@@ -30,6 +31,7 @@ class Property(models.Model):
         ('Send', 'Send'),
         ('Ordered', 'Ordered')
     )
+    slug = models.SlugField(blank=True, null=True)
     name = models.CharField(max_length=450)
     sort_number = models.PositiveIntegerField(unique=True)
     views = models.PositiveIntegerField(default=1)
@@ -46,6 +48,7 @@ class Property(models.Model):
     phone = models.CharField(max_length=20, null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=123)
     video = models.FileField(upload_to='files/', null=True, blank=True)
+    current_price = models.IntegerField(default=0.0)
 
     def __str__(self):
         return self.name
@@ -53,6 +56,33 @@ class Property(models.Model):
     @property
     def get_first_step_price(self):
         return self.start_price * 0.1
+
+    @property
+    def auction_status(self):
+        today = timezone.now()
+        auction = self.auction
+        if auction.cap_time < today:
+            return "past"
+        elif auction.start > today:
+            return "upcoming"
+        else:
+            return "live"
+
+    def time_to_end(self):
+        today = timezone.now()
+        auction = self.auction
+        if auction.cap_time < today:
+            return 0
+        else:
+            return auction.cap_time - today
+
+    def time_to_start(self):
+        today = timezone.now()
+        auction = self.auction
+        if auction.cap_time < today:
+            return 0
+        else:
+            return today - auction.start
 
 
 class PropertyImages(models.Model):

@@ -1,5 +1,8 @@
 asgiref==3.7.2
+async-timeout==4.0.2
 certifi==2023.5.7
+channels==4.0.0
+channels-redis==4.1.0
 charset-normalizer==3.1.0
 coreapi==2.3.3
 coreschema==0.0.4
@@ -17,11 +20,13 @@ inflection==0.5.1
 itypes==1.2.0
 Jinja2==3.1.2
 MarkupSafe==2.1.2
+msgpack==1.0.5
 packaging==23.1
 Pillow==9.5.0
 psycopg2==2.9.6
 python-dotenv==1.0.0
 pytz==2023.3
+redis==4.5.5
 requests==2.31.0
 ruamel.yaml==0.17.31
 ruamel.yaml.clib==0.2.7

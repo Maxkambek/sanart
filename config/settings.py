@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts',
     'contents',
-    'main'
+    'main',
+    'auction'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +68,17 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'config.routing.application'
 WSGI_APPLICATION = 'config.wsgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 DATABASES = {
     'default': {
