@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.db import models
 from ckeditor.fields import RichTextField
+from uuid import uuid4
 
 
 class Catalog(models.Model):

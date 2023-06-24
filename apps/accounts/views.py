@@ -50,7 +50,10 @@ class RegisterConfirmAPI(generics.GenericAPIView):
         token = Token.objects.create(user=user)
         data = {
             'message': 'User verified',
-            'token': str(token)
+            'token': str(token),
+            'user_id': user.id,
+            'user': user.role,
+            'is_separate': user.is_separate,
         }
         return response.Response(data, status=status.HTTP_201_CREATED)
 
@@ -97,7 +100,8 @@ class LoginVerifyAPIView(generics.GenericAPIView):
             'message': 'User verified',
             'token': str(token),
             'user': user.role,
-            'is_separate': user.is_separate
+            'is_separate': user.is_separate,
+            'user_id': user.id
         }
         return response.Response(data, status=status.HTTP_201_CREATED)
 

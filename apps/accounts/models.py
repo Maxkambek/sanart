@@ -103,3 +103,11 @@ class VerifyPhone(models.Model):
 
     def __str__(self):
         return self.phone
+
+
+class UserBalance(models.Model):
+    amount = models.PositiveBigIntegerField(default=0)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.phone

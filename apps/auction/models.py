@@ -1,24 +1,21 @@
-from __future__ import unicode_literals
 from django.db import models
-from accounts.models import User
-from main.models import Property
 from django.db.models.signals import pre_save, post_save
 from django.utils.text import slugify
+from accounts.models import User
+from main.models import Property
 from django.dispatch import receiver
 from django.utils import timezone
 
 
 class Auction(models.Model):
     start = models.DateTimeField(auto_now=False)
-    item = models.OneToOneField(
-        Property, on_delete=models.CASCADE, related_name="auction")
+    item = models.OneToOneField(Property, on_delete=models.CASCADE, related_name="auction")
     cap_time = models.DateTimeField(auto_now=False)
 
 
 class Message(models.Model):
-    auction = models.ForeignKey(
-        Auction, on_delete=models.CASCADE, related_name="auction")
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    auction = models.ForeignKey(Auction, on_delete=models.SET_NULL, null=True, related_name="auction")
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     price = models.IntegerField(default=0)
     time_stamp = models.DateTimeField(auto_now_add=True)
 
@@ -31,29 +28,10 @@ class CustomerCare(models.Model):
     query = models.TextField()
 
 
-#############
-# RECEIVERS #
-#############
-
-
-def create_slug(instance, new_slug=None):
-    slug = slugify(instance.name)
-    if new_slug is not None:
-        slug = new_slug
-    qs = Property.objects.filter(slug=slug).order_by("id")
-    exists = qs.exists()
-    if exists:
-        new_slug = "%s-%s" % (slug, qs.first().id)
-        return create_slug(instance, new_slug=new_slug)
-    return slug
-
-
 @receiver(pre_save, sender=Property)
 def pre_save_item_receiver(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = create_slug(instance)
     if kwargs.get("created"):
-        instance.current_price = instance.start_price
+        instance.current_price = instance.base_price
 
 
 @receiver(pre_save, sender=Message)

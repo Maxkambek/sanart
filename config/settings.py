@@ -21,6 +21,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 INSTALLED_APPS = [
     'jazzmin',
     'modeltranslation',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -68,22 +70,35 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = 'config.routing.application'
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = 'config.routing.application'
+
+SITE_URL = 'http://192.168.1.157:8000/en/'
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
         },
     },
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'sanart',
+        'USER': 'sanart',
+        'PASSWORD': 'sanart',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
