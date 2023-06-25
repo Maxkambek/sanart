@@ -271,6 +271,8 @@ class UserDetailJismoniyRUDAPI(generics.RetrieveUpdateDestroyAPIView):
 class UserChangeRole(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [TokenAuthentication]
 
     def patch(self, request, *args, **kwargs):
         serializer = self.get_serializer(instance=self.request.user, data=self.request.data, partial=True)
